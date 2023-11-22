@@ -20,6 +20,7 @@ terraform apply -var-file=input.tfvars -auto-approve
 To destroy the infrastructure, follow these steps:
 
 cd es-cluster-configuration
+
 terraform destroy -var-file=input.tfvars -auto-approve
 
 cd ../es-cluster-infra-provisioning
