@@ -1,0 +1,4 @@
+{"index": {"_id": "123"}}
+{"veh_id":123,"dealer_id":"test_dealer","vin":"test_vin","vehicle_year":2010,"selling_price":10000,"cost":5000,"make":"toyota","model":"camry","mileage":20000,"color":"black", "creation_dt": "2023-11-21"}
+{"index": {"_id": "234"}}
+{"veh_id":234,"dealer_id":"test_dealer","vin":"test_vin","vehicle_year":2010,"selling_price":10000,"cost":5000,"make":"toyota","model":"camry","mileage":20000,"color":"red", "creation_dt": "2023-11-21"}
