@@ -1,6 +1,6 @@
 # es-cluster setup using with terraform
 
-Go To es-cluster-infra-provisioning directory and run below terraform commonds for provision infrastructure,
+Go To es-cluster-infra-provisioning directory and run below terraform commands for provision infrastructure,
 
 cd es-cluster-infra-provisioning
 
