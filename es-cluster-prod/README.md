@@ -8,7 +8,7 @@ terraform init
 
 terraform apply -var-file=input.tfvars -auto-approve
 
-once ec2 instance launched successfully then go to es-cluster-configuration directory and run below terraform commands for configuring elasticsearch cluster and kibana setup.
+once ec2 instances are launched successfully go to the es-cluster-configuration directory and run below terraform commands for configuring elasticsearch cluster and kibana setup.
 
 cd ../es-cluster-configuration
 
