@@ -5,10 +5,7 @@ resource "aws_instance" "vm" {
   key_name                      = var.key_name
   private_ip                    = var.private_ip
   vpc_security_group_ids        = [var.security_group_id]
-  #iam_instance_profile          = var.iam_instance_profile
-  associate_public_ip_address   = var.public_ip   
   user_data                     = var.user_data
-
   tags                      = {
       Name                  = "${var.tags}"  
   }
@@ -17,7 +14,7 @@ resource "aws_instance" "vm" {
     type        = "ssh"
     user        = "ec2-user"    
     private_key = file("${var.key_name}.pem")
-    host        = aws_instance.vm.public_ip
+    host        = aws_instance.vm.private_ip
     timeout     = "5m"
   } 
 
@@ -61,10 +58,7 @@ resource "aws_volume_attachment" "ebs_att" {
 }
 
 
-resource "aws_eip_association" "eip_assoc" {
-  instance_id   = aws_instance.vm.id
-  allocation_id = var.eip_allocation_id
-}
+
 
 
  

@@ -1,8 +1,11 @@
 #################### EC2 Details ###################
 key_name                    = "testserver"
                               #-MasterNode-#   #-DataNode1-#    #-DataNode2-#   #-KibanaNode-#
-public_ips                  = ["3.220.16.77", "44.212.239.132", "54.80.59.114", "35.172.95.248"]
-private_ips                 = ["10.10.1.51", "10.10.2.52", "10.10.2.53", "10.10.1.50"] 
+private_ips                 = ["10.10.3.51", "10.10.4.52", "10.10.4.53", "10.10.2.50"] 
+eip_allocation_id           = "eipalloc-0a7a673263a2f52fc"
+
+############## kibana server tag ######################
+server_tag                  = "Kibana-Server"        
 
 
 

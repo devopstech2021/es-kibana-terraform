@@ -8,15 +8,7 @@ variable "security_group_id" {}
 
 variable "subnet_id" {}
 
-variable "associate_public_ip" {}
-
 variable "region" {}
-
-variable "eip_allocation_ids" {}
-
-#variable "iam_role_name" {}
-
-variable "elastic_ip" {}
 
 variable "private_ips" {
     type    = list(string)
