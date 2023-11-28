@@ -22,7 +22,8 @@ public class Config extends ElasticsearchConfiguration {
         SSLContextBuilder sslBuilder = SSLContexts.custom().loadTrustMaterial(null, (x509Certificates, s) -> true);
         final SSLContext sslContext = sslBuilder.build();
         return ClientConfiguration.builder()
-                .connectedTo("localhost:9200").usingSsl(sslContext).withBasicAuth("elastic", "XnXnOyXT_LhZWsuSAQDW").build();
+                .connectedTo("localhost:9200").withBasicAuth("elastic", "XnXnOyXT_LhZWsuSAQDW").build();
+//                .connectedTo("localhost:9200").usingSsl(sslContext).withBasicAuth("elastic", "XnXnOyXT_LhZWsuSAQDW").build();
     }
 
 

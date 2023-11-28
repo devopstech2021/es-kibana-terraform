@@ -15,8 +15,10 @@ import static org.springframework.data.elasticsearch.annotations.FieldType.Date;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(indexName = "cars")
+@Document(indexName = Vehicle.indexName)
 public class Vehicle {
+    public static final String indexName = "vehicle";
+
     private @Id String id;
 
     @Field("vehicle_id")
@@ -30,14 +32,8 @@ public class Vehicle {
     @Field("vin")
     private String vin;
 
-    @Field("name")
-    private String name;
-
-    @Field("description")
-    private String description;
-
-    @Field("vehicle_year")
-    @JsonProperty("vehicle_year")
+    @Field("make_year")
+    @JsonProperty("make_year")
     private int vehicleYear;
 
     @Field("selling_price")
@@ -49,6 +45,9 @@ public class Vehicle {
 
     @Field("model")
     private String model;
+
+    @Field("category")
+    private String category;
 
     @Field("mileage")
     private int mileage;
@@ -84,9 +83,5 @@ public class Vehicle {
     @Field("fuel_economy_city")
     @JsonProperty("fuel_economy_city")
     private int fuelEconomyCity;
-
-    @Field("premium_features")
-    @JsonProperty("premium_features")
-    private List<String> premiumFeatures;
 }
 
