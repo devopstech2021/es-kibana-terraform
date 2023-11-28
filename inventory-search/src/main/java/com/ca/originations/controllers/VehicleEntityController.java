@@ -1,4 +1,5 @@
 package com.ca.originations.controllers;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.ca.originations.models.Vehicle;
 import com.ca.originations.models.VehicleResponse;
@@ -16,6 +17,7 @@ import java.io.IOException;
 
 @Slf4j
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/inventory/v1/vehicles")
 public class VehicleEntityController {
     @Autowired
