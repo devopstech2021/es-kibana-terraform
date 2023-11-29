@@ -38,7 +38,9 @@ function CardContainer({ carsData }: Props) {
                   <div className="flex justify-between items-start h-24">
                     <div className="w-2/4">
                       <p className="text-blue-500 text-2xl font-bold text-ellipsis overflow-hidden">
-                        {car.name}
+                        {car.make}
+                        {" "}
+                        {car.model}
                       </p>
                     </div>
                     <Separator orientation="vertical" className="mr-4" />
@@ -59,7 +61,7 @@ function CardContainer({ carsData }: Props) {
                       {car.transmission}cyl Automatic
                     </p>
                   </div>
-                  {car.premium_features.length !== 0 && (
+                  {/*car.premium_features.length !== 0 && (
                     <div className="flex mt-2">
                       {car.premium_features.map((feature: string) => (
                         <Badge
@@ -71,7 +73,7 @@ function CardContainer({ carsData }: Props) {
                         </Badge>
                       ))}
                     </div>
-                  )}
+                  )*/} 
                   <div className="flex justify-center mt-4">
                     <Button
                       className="bg-warning text-white"
