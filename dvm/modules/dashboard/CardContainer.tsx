@@ -26,7 +26,7 @@ function CardContainer({ carsData }: Props) {
             >
               <Image
                 className=""
-                src="/cars/5.webp"
+                src={`/cars/${Math.floor(Math.random() * 10) + 1}.webp`}
                 width={350}
                 height={350}
                 alt="Car Image"

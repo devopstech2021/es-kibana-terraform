@@ -4,10 +4,10 @@ import FiltersContainer from "./FiltersContainer";
 import { generateCars } from "@/api/services/dashboard";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
+import { FormSubmitObject } from "@/api/services/dashboard";
 
 function Dashboard() {
-  const handleSubmit = (formValues: any) => {
-    console.log("main", formValues);
+  const handleSubmit = (formValues: FormSubmitObject) => {
     getCars(formValues);
   };
 
@@ -32,7 +32,7 @@ function Dashboard() {
     getCars(formValues);
   }, [currentPage, limit]);
 
-  const getCars = (formValues: any) => {
+  const getCars = (formValues: FormSubmitObject) => {
     setIsLoading(true);
     generateCars(formValues, false, currentPage, limit)
       .then((res) => {

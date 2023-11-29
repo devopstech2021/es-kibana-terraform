@@ -1,6 +1,6 @@
 import HttpClient from "../axios";
 
-interface FormSubmitObject {
+export interface FormSubmitObject {
   yearMin?: number;
   yearMax?: number;
   priceMin?: number;
