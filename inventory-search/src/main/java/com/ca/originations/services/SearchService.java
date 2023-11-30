@@ -88,7 +88,7 @@ public class SearchService {
     private void processAggregation(String key, Aggregate aggregate, Map<String, Map<String, Object>> aggs) {
         if (aggregate.isSterms()) {
             aggregate.sterms().buckets().array().forEach(b -> {
-                        logger.info("Key: " + key + " Value: " + b.key().stringValue() + " Count: " + b.docCount());
+//                        logger.info("Key: " + key + " Value: " + b.key().stringValue() + " Count: " + b.docCount());
                         var termAgg = aggs.get(key);
                         if (termAgg == null) {
                             termAgg = new HashMap<>();
