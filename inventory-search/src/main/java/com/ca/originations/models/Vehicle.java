@@ -6,8 +6,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 
-import java.util.List;
-
 import static org.springframework.data.elasticsearch.annotations.FieldType.Date;
 
 @Data
@@ -34,7 +32,7 @@ public class Vehicle {
 
     @Field("make_year")
     @JsonProperty("make_year")
-    private int vehicleYear;
+    private int makeYear;
 
     @Field("selling_price")
     @JsonProperty("selling_price")

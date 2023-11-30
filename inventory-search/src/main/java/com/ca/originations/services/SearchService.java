@@ -2,33 +2,36 @@ package com.ca.originations.services;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.SortOptions;
+import co.elastic.clients.elasticsearch._types.aggregations.Aggregate;
+import co.elastic.clients.elasticsearch._types.aggregations.Aggregation;
 import co.elastic.clients.elasticsearch._types.query_dsl.Query;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import com.ca.originations.models.Vehicle;
 import com.ca.originations.models.VehicleResponse;
 import com.ca.originations.models.requests.SearchRequest;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
-@Slf4j
 @Component
 public class SearchService {
 
+    private Logger logger = Logger.getLogger(SearchService.class.getName());
     @Autowired
     private ElasticsearchClient client;
 
-    public VehicleResponse search(SearchRequest searchRequest) throws RuntimeException,IOException {
+    public VehicleResponse search(SearchRequest searchRequest) throws RuntimeException, IOException {
         Query query = searchRequest.getQuery().getQuery("test");
         List<SortOptions> sortOptions = searchRequest.getSortOptions();
 
-        Integer startOffset = (searchRequest.getPage() -1) * searchRequest.getLimit();
+        Integer startOffset = (searchRequest.getPage() - 1) * searchRequest.getLimit();
         SearchResponse<Vehicle> searchResponse = client.search(s -> s
                 .index(Vehicle.indexName)
                 .query(query).sort(sortOptions).from(startOffset).size(searchRequest.getLimit()), Vehicle.class);
@@ -38,7 +41,7 @@ public class SearchService {
         }
 
         List<Hit<Vehicle>> hits = searchResponse.hits().hits();
-        log.info("Total hits: " + searchResponse.hits().total());
+        logger.info("Total hits: " + searchResponse.hits().total());
         List<Vehicle> vehicles = new ArrayList<>();
 
         for (Hit<Vehicle> hit : hits) {
@@ -52,5 +55,112 @@ public class SearchService {
                 .result(vehicles)
                 .build();
         return response;
+    }
+
+    public Map<String, Map<String, Object>> getAggregates(SearchRequest searchRequest) throws IOException {
+
+        Query query = searchRequest.getQuery().getQuery("test");
+        List<SortOptions> sortOptions = searchRequest.getSortOptions();
+
+        Map<String, Aggregation> aggregationMap = searchRequest.getAggregations();
+        logger.info("Aggregates: " + aggregationMap);
+        SearchResponse<Vehicle> searchResponse = client.search(s -> s
+                .index(Vehicle.indexName)
+                .query(query).aggregations(aggregationMap).size(500), Vehicle.class
+        );
+
+        logger.info("Total Aggregates: " + searchResponse.aggregations());
+        logger.info("Total hits: " + searchResponse.hits().total());
+
+        Map<String, Map<String, Object>> aggs = new HashMap<>();
+        processAggregates(searchResponse.aggregations(), aggs);
+        aggs.put("total", Map.of("total_vehicles", searchResponse.hits().total().value()));
+        return aggs;
+    }
+
+    private void processAggregates(Map<String, Aggregate> aggregations, Map<String, Map<String, Object>> aggs) {
+
+        for (Map.Entry<String, Aggregate> aggregateResult : aggregations.entrySet()) {
+            processAggregation(aggregateResult.getKey(), aggregateResult.getValue(), aggs);
+        }
+    }
+
+    private void processAggregation(String key, Aggregate aggregate, Map<String, Map<String, Object>> aggs) {
+        if (aggregate.isSterms()) {
+            aggregate.sterms().buckets().array().forEach(b -> {
+                        logger.info("Key: " + key + " Value: " + b.key().stringValue() + " Count: " + b.docCount());
+                        var termAgg = aggs.get(key);
+                        if (termAgg == null) {
+                            termAgg = new HashMap<>();
+                            termAgg.put(b.key().stringValue(), b.docCount());
+                        } else {
+                            var docCount = termAgg.get(b.key().stringValue());
+                            if (docCount == null) {
+                                termAgg.put(b.key().stringValue(), b.docCount());
+                            } else {
+                                termAgg.put(b.key().stringValue(), (Long) docCount + b.docCount());
+                            }
+                        }
+                        aggs.put(key, termAgg);
+                    }
+            );
+        }
+
+        var doubleValue = 0.0;
+        if (aggregate.isMin()) {
+            doubleValue = aggregate.min().value();
+        }
+        if (aggregate.isMax()) {
+            doubleValue = aggregate.max().value();
+        }
+
+        if (aggregate.isMax() || aggregate.isMin()) {
+            switch (key) {
+                case "minPrice":
+                    addPriceAgg(aggs, doubleValue, "min");
+                    break;
+                case "maxPrice":
+                    addPriceAgg(aggs, doubleValue, "max");
+                    break;
+                case "minYear":
+                    addVehicleYearAgg(aggs, doubleValue, "min");
+                    break;
+                case "maxYear":
+                    addVehicleYearAgg(aggs, doubleValue, "max");
+                    break;
+            }
+        }
+    }
+
+    private void addVehicleYearAgg(Map<String, Map<String, Object>> aggs, double values, String key) {
+        var yearAgg = aggs.get("vehicleYear");
+        if (yearAgg == null) {
+            yearAgg = new HashMap<>();
+            yearAgg.put(key, values);
+        } else {
+            var year = yearAgg.get(key);
+            if (year == null) {
+                yearAgg.put(key, values);
+            } else {
+                yearAgg.put(key, (Double)year + values);
+            }
+        }
+        aggs.put("vehicleYear", yearAgg);
+    }
+
+    private void addPriceAgg(Map<String, Map<String, Object>> aggs, double values, String key) {
+        var priceAgg = aggs.get("price");
+        if (priceAgg == null) {
+            priceAgg = new HashMap<>();
+            priceAgg.put(key, values);
+        } else {
+            var price = priceAgg.get(key);
+            if (price == null) {
+                priceAgg.put(key, values);
+            } else {
+                priceAgg.put(key, (Double)price + values);
+            }
+        }
+        aggs.put("price", priceAgg);
     }
 }

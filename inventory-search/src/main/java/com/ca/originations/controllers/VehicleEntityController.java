@@ -1,12 +1,10 @@
 package com.ca.originations.controllers;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.ca.originations.models.Vehicle;
 import com.ca.originations.models.VehicleResponse;
 import com.ca.originations.models.requests.SearchRequest;
 import com.ca.originations.services.SearchService;
 import com.ca.originations.services.VehicleEntityService;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +12,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Map;
 
-@Slf4j
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/inventory/v1/vehicles")
 public class VehicleEntityController {
+
+    private static final Logger logger = LoggerFactory.getLogger(VehicleEntityController.class);
+
     @Autowired
     private VehicleEntityService entityService;
 
@@ -33,9 +33,19 @@ public class VehicleEntityController {
 
     @PostMapping("/search")
     public VehicleResponse getEntitiesBySearchCriteria(@RequestBody SearchRequest searchRequest) {
-        log.info("searchCriteria: {}", searchRequest);
+        logger.info("searchCriteria: {}", searchRequest);
         try {
             return searchService.search(searchRequest);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @PostMapping("/aggregates")
+    public Map<String, Map<String, Object>> getAggregatesBySearchCriteria(@RequestBody SearchRequest searchRequest) {
+        logger.info("searchCriteria: {}", searchRequest);
+        try {
+            return searchService.getAggregates(searchRequest);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

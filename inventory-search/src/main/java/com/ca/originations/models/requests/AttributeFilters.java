@@ -12,9 +12,6 @@ public class AttributeFilters implements ESQuery {
 
     private Logger logger = LoggerFactory.getLogger(AttributeFilters.class);
 
-    @JsonProperty("name")
-    private FilterCriteria name;
-
     @JsonProperty("make")
     private FilterCriteria make;
 
@@ -27,8 +24,8 @@ public class AttributeFilters implements ESQuery {
     @JsonProperty("mileage")
     private FilterCriteria mileage;
 
-    @JsonProperty("vehicle_year")
-    private FilterCriteria vehicleYear;
+    @JsonProperty("make_year")
+    private FilterCriteria makeYear;
 
     @JsonProperty("exterior_color")
     private FilterCriteria exteriorColor;
@@ -38,9 +35,6 @@ public class AttributeFilters implements ESQuery {
 
         var boolQuery = BoolQuery.of(
             bq -> {
-                if (name != null) {
-                    bq.must(name.getQuery("name"));
-                }
                 if (make != null) {
                     bq.must(make.getQuery("make"));
                 }
@@ -53,8 +47,8 @@ public class AttributeFilters implements ESQuery {
                 if (mileage != null) {
                     bq.must(mileage.getQuery("mileage"));
                 }
-                if (vehicleYear != null) {
-                    bq.must(vehicleYear.getQuery("vehicle_year"));
+                if (makeYear != null) {
+                    bq.must(makeYear.getQuery("make_year"));
                 }
                 if (sellingPrice != null) {
                     bq.must(sellingPrice.getQuery("selling_price"));
