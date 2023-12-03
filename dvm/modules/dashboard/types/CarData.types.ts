@@ -2,16 +2,15 @@ interface CarApiResponse {
   total: number;
   page: number;
   limit: number;
-  result: ResultItem[];
+  result: CarInfo[];
 }
 
-export default interface ResultItem {
-  id: null | string;
+export default interface CarInfo {
+  id: number | null;
   vin: string;
-  name: string;
-  description: string;
   make: string;
   model: string;
+  category: string;
   mileage: number;
   location: {
     lon: number;
@@ -22,12 +21,11 @@ export default interface ResultItem {
   transmission: string;
   vehicle_id: number;
   dealer_id: string;
-  vehicle_year: number;
+  make_year: number;
   selling_price: number;
   exterior_color: string;
   creation_dt: string;
-  interior_color: string;
+  interior_color: string | null;
   fuel_economy_highway: number;
   fuel_economy_city: number;
-  premium_features: string[];
 }

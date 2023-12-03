@@ -5,9 +5,14 @@ import { generateCars } from "@/api/services/dashboard";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { FormSubmitObject } from "@/api/services/dashboard";
+import { Skeleton } from "@/components/ui/skeleton";
 
 function Dashboard() {
   const handleSubmit = (formValues: FormSubmitObject) => {
+    setFormValues((prevValues: any) => ({
+      ...prevValues,
+      ...formValues,
+    }));
     getCars(formValues);
   };
 
@@ -17,18 +22,18 @@ function Dashboard() {
 
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [formValues, setFormValues] = useState({
+    yearMin: 1990,
+    yearMax: 2023,
+    priceMin: 1,
+    priceMax: 999999,
+    mileageMin: 1,
+    mileageMax: 999999,
+    items: [],
+  });
   const limit = 4;
 
   useEffect(() => {
-    const formValues = {
-      yearMin: 1990,
-      yearMax: 2023,
-      priceMin: 1,
-      priceMax: 999999,
-      mileageMin: 1,
-      mileageMax: 999999,
-      items: [],
-    };
     getCars(formValues);
   }, [currentPage, limit]);
 
@@ -39,8 +44,7 @@ function Dashboard() {
         if (res) {
           console.log("response", res.data);
           setCarsData(res.data.result);
-          setTotalPages(res.data.total);
-          setIsLoading(false);
+          setTotalPages(Math.ceil(res.data.total / limit));
         }
       })
       .catch(() => {
@@ -50,7 +54,9 @@ function Dashboard() {
         });
       })
       .finally(() => {
-        setIsLoading(false);
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 400);
       });
   };
   const handlePageChange = (newPage: number) => {
@@ -59,9 +65,16 @@ function Dashboard() {
   return (
     <section className="mx-32 mt-10 flex">
       <FiltersContainer handleSubmit={handleSubmit} />
-      <div className="flex flex-col w-3/4 justify-between">
+      <div className="w-3/4">
         {isLoading ? (
-          <h1>Loading...</h1>
+          <div className="flex items-center space-x-4 h-full justify-center">
+            <Skeleton className="h-12 w-12 rounded-full" />
+            <div className="space-y-2">
+              <Skeleton className="h-8 w-[250px]" />
+              <Skeleton className="h-6 w-[250px]" />
+              <Skeleton className="h-4 w-[200px]" />
+            </div>
+          </div>
         ) : (
           <>
             {totalPages === 0 ? (
@@ -69,7 +82,7 @@ function Dashboard() {
             ) : (
               <>
                 <CardContainer carsData={carsData} />
-                <div className="flex items-center self-center mb-4">
+                <div className="flex items-center justify-center mb-4 mt-6">
                   <Button
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}

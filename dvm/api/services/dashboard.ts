@@ -72,7 +72,7 @@ const generateQuery = (params: GenerateQueryParams): any => {
   }
 
   if (params.yearMin !== undefined || params.yearMax !== undefined) {
-    query.query.makeYear = {
+    query.query.make_year = {
       type: "range",
       value: {
         from: params.yearMin || 1900,
