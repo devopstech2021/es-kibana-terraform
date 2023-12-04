@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import CardContainer from "./CardContainer";
 import FiltersContainer from "./FiltersContainer";
 import { generateCars } from "@/api/services/dashboard";
@@ -6,18 +6,11 @@ import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { FormSubmitObject } from "@/api/services/dashboard";
 import { Skeleton } from "@/components/ui/skeleton";
+import { resultsPerPage } from "@/common/constants";
 
 function Dashboard() {
-  const handleSubmit = (formValues: FormSubmitObject) => {
-    setFormValues((prevValues: any) => ({
-      ...prevValues,
-      ...formValues,
-    }));
-    getCars(formValues);
-  };
-
   const { toast } = useToast();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [carsData, setCarsData] = useState([]);
 
   const [totalPages, setTotalPages] = useState(0);
@@ -31,15 +24,24 @@ function Dashboard() {
     mileageMax: 999999,
     items: [],
   });
-  const limit = 4;
+  const limit = resultsPerPage;
 
   useEffect(() => {
-    getCars(formValues);
-  }, [currentPage, limit]);
+    getCars(formValues, currentPage);
+  }, []);
 
-  const getCars = (formValues: FormSubmitObject) => {
+  const handleSubmit = (formValues: FormSubmitObject) => {
+    setFormValues((prevValues: any) => ({
+      ...prevValues,
+      ...formValues,
+    }));
+    setCurrentPage(1);
+    getCars(formValues, 1);
+  };
+
+  const getCars = (formValues: FormSubmitObject, pageNo: number) => {
     setIsLoading(true);
-    generateCars(formValues, false, currentPage, limit)
+    generateCars(formValues, false, pageNo, limit)
       .then((res) => {
         if (res) {
           console.log("response", res.data);
@@ -60,7 +62,9 @@ function Dashboard() {
       });
   };
   const handlePageChange = (newPage: number) => {
+    getCars(formValues, newPage);
     setCurrentPage(newPage);
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   };
   return (
     <section className="mx-32 mt-10 flex">

@@ -24,3 +24,5 @@ export const car_types = [
       label: "Station Wagon",
     },
   ] as const;
+
+  export const resultsPerPage = 6;

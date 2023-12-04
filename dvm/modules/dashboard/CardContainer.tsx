@@ -20,12 +20,12 @@ function CardContainer({ carsData }: Props) {
           carsData.map((car: CarInfo) => (
             <Card
               key={car.vehicle_id}
-              className="w-[350px] h-[600px] mx-6 my-2"
+              className="w-[375px] h-[625px] mx-6 my-2"
             >
               <Image
                 className=""
                 src={`/cars/${Math.floor(Math.random() * 10) + 1}.webp`}
-                width={350}
+                width={375}
                 height={400}
                 alt="Car Image"
                 priority
@@ -36,7 +36,7 @@ function CardContainer({ carsData }: Props) {
                   <div className="flex justify-between items-start h-24 text-ellipsis overflow-hidden">
                     <div className="w-2/4">
                       <p className="text-blue-500 text-xl font-bold">
-                        {car.make} {car.model}
+                        {car.make_year} {car.make} {car.model}
                       </p>
                     </div>
                     <Separator orientation="vertical" className="mr-4" />

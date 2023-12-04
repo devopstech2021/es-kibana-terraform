@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -11,7 +11,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -22,6 +21,18 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 import { car_types } from "@/common/constants";
+import RangeField from "./RangeField";
+import { Slider } from "@/components/ui/slider";
+export interface FormData {
+  make?: string;
+  yearMin: number;
+  yearMax: number;
+  priceMin: number;
+  priceMax: number;
+  mileageMin: number;
+  mileageMax: number;
+  items?: string[];
+}
 
 const formSchema = z
   .object({
@@ -66,9 +77,7 @@ const formSchema = z
         message: "Enter a valid max. mileage",
       })
       .max(999999),
-    items: z
-      .array(z.string())
-      .optional(),
+    items: z.array(z.string()).optional(),
   })
   .refine((data) => data.priceMin <= data.priceMax, {
     message: "Min price cannot be greater than max price.",
@@ -82,6 +91,10 @@ interface Props {
 }
 
 function FiltersContainer({ handleSubmit }: Props) {
+  const [yearRange, setYearRange] = useState<number[]>([1990, 2024]);
+  const handleYearChange = (value: number[]) => {
+    setYearRange(value);
+  };
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -96,6 +109,11 @@ function FiltersContainer({ handleSubmit }: Props) {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    values.yearMin = yearRange[0];
+    values.yearMax = yearRange[1];
+    if (values.make === "all_types") {
+      values.make = undefined;
+    }
     handleSubmit(values);
   }
 
@@ -103,6 +121,7 @@ function FiltersContainer({ handleSubmit }: Props) {
     <section className="border-2 border-slate-200 rounded-md w-1/4 px-6 py-4 mb-2 h-fit">
       <p className="text-lg font-semibold">Filters</p>
       <p className=" text-sm font-semibold mt-2">Make & Model</p>
+
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
@@ -117,12 +136,18 @@ function FiltersContainer({ handleSubmit }: Props) {
                 >
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select an option" />
+                      <SelectValue
+                        placeholder="All Types"
+                        defaultValue={"All Types"}
+                      />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
+                    <SelectItem value="all_types" defaultValue={"All Types"}>
+                      All Types
+                    </SelectItem>
                     <SelectItem value="toyota">Toyota</SelectItem>
-                    <SelectItem value="bmm">BMW</SelectItem>
+                    <SelectItem value="bmw">BMW</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -130,87 +155,39 @@ function FiltersContainer({ handleSubmit }: Props) {
             )}
           />
           <Separator className="my-4" />
-          <p className="text-sm font-semibold mb-2">Year</p>
-          <div className="flex items-center justify-between">
-            <div>
-              <FormField
-                control={form.control}
-                name="yearMin"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-sm text-slate-500">
-                      Year Min
-                    </FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="1990" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div>
-              <p className="text-sm text-slate-800 mt-8 mx-4">to</p>
-            </div>
-            <div>
-              <FormField
-                control={form.control}
-                name="yearMax"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-sm text-slate-500">
-                      Year Max
-                    </FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="2023" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+          <div className="mb-12">
+            <p className="text-sm font-semibold my-2">Year</p>
+            <Slider
+              minStepsBetweenThumbs={1}
+              max={2024}
+              min={1990}
+              step={1}
+              value={yearRange}
+              onValueChange={handleYearChange}
+              formatLabel={(value) => `${value}`}
+              className="my-4"
+            />
           </div>
+
           <Separator className="my-4" />
-          <p className="text-sm font-semibold mb-2">Price</p>
-          <div className="flex items-center justify-between">
-            <div>
-              <FormField
-                control={form.control}
-                name="priceMin"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-sm text-slate-500">
-                      Price Min
-                    </FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="0" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div>
-              <p className="text-sm text-slate-800 mt-8 mx-4">to</p>
-            </div>
-            <div>
-              <FormField
-                control={form.control}
-                name="priceMax"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-sm text-slate-500">
-                      Price Max
-                    </FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="989000" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </div>
+          <RangeField
+            label="Price"
+            nameMin="priceMin"
+            nameMax="priceMax"
+            placeholderMin="1"
+            placeholderMax="999999"
+            form={form}
+          />
+          <Separator className="my-4" />
+
+          <RangeField
+            label="Mileage"
+            nameMin="mileageMin"
+            nameMax="mileageMax"
+            placeholderMin="1"
+            placeholderMax="999999"
+            form={form}
+          />
           <Separator className="my-4" />
           <FormField
             control={form.control}
@@ -236,8 +213,8 @@ function FiltersContainer({ handleSubmit }: Props) {
                               checked={field.value?.includes(item.id)}
                               onCheckedChange={(checked) => {
                                 return checked
-                                // @ts-ignore
-                                  ? field.onChange([...field.value, item.id])
+                                  ? // @ts-ignore
+                                    field.onChange([...field.value, item.id])
                                   : field.onChange(
                                       field.value?.filter(
                                         (value) => value !== item.id
@@ -259,48 +236,8 @@ function FiltersContainer({ handleSubmit }: Props) {
             )}
           />
           <Separator className="my-4" />
-          <p className="text-sm font-semibold mb-2">Mileage</p>
-          <div className="flex items-center justify-between">
-            <div>
-              <FormField
-                control={form.control}
-                name="mileageMin"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-sm text-slate-500">
-                      Min
-                    </FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="1990" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div>
-              <p className="text-sm text-slate-800 mt-8 mx-4">to</p>
-            </div>
-            <div>
-              <FormField
-                control={form.control}
-                name="mileageMax"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-sm text-slate-500">
-                      Max
-                    </FormLabel>
-                    <FormControl>
-                      <Input type="number" placeholder="2023" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          </div>
           <div className="m-auto mt-6 flex justify-center">
-          <Button
+            <Button
               variant={"outline"}
               className=" w-2/4"
               onClick={() => window.location.reload()}
@@ -310,7 +247,6 @@ function FiltersContainer({ handleSubmit }: Props) {
             <Button type="submit" className="ml-4 w-2/4">
               Submit
             </Button>
-            
           </div>
         </form>
       </Form>

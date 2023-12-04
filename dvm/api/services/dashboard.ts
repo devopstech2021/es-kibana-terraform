@@ -42,7 +42,6 @@ const generateQuery = (params: GenerateQueryParams): any => {
   if (params.limit) {
     query.limit = params.limit;
   }
-  
 
   if (params.make) {
     query.query.make = {
