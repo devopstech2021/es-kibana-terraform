@@ -49,9 +49,7 @@ function Dashboard() {
         title: "Uh oh! Something went wrong.",
       });
     } finally {
-      setTimeout(() => {
-        setIsLoadingCard(false);
-      }, 300);
+      setIsLoadingCard(false);
     }
   };
   const getAggregateData = async (
@@ -99,9 +97,7 @@ function Dashboard() {
         title: "Uh oh! Something went wrong.",
       });
     } finally {
-      setTimeout(() => {
-        setIsLoadingFilters(false);
-      }, 300);
+      setIsLoadingFilters(false);
     }
   };
 
@@ -120,7 +116,7 @@ function Dashboard() {
     window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   };
   return (
-    <section className="mx-32 mt-10 flex">
+    <section className="mx-20 mt-10 flex">
       {isLoadingFilters ? (
         <div className="flex exteriorColors-center space-x-4 h-full justify-center">
           <div className="space-y-2">

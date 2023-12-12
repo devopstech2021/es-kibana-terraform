@@ -119,7 +119,6 @@ function FiltersContainer({
 
   useEffect(() => {
     form.watch((data) => {
-      // you can throttle the request here as well, and without any render to the UI
       onSubmit(data);
     });
   }, [form.watch()]);
@@ -143,6 +142,8 @@ function FiltersContainer({
     const setColorValues = () => {
       if (values.exteriorColors && values.exteriorColors.length > 0) {
         setColors(values.exteriorColors);
+      } else {
+        setColors([])
       }
     };
   
@@ -157,7 +158,7 @@ function FiltersContainer({
   }
 
   return (
-    <section className="border-2 border-slate-200 rounded-md w-1/4 px-6 py-4 mb-2 h-fit">
+    <section className="border-2 border-slate-200 rounded-md w-1/5 px-9 py-4 mb-2 h-fit">
       <p className="text-lg font-semibold">
         Filters{" "}
         <RotateCcw

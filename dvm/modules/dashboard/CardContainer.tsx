@@ -47,12 +47,12 @@ function CardContainer({ carsData }: Props) {
           carsData.map((car: CarInfo) => (
             <Card
               key={car.vehicle_id}
-              className="w-[375px] h-[625px] mx-6 my-2"
+              className="w-[360px] h-[610px] mx-6 my-2"
             >
               <Image
                 className=""
                 src={getCarImage(car.exterior_color)}
-                width={375}
+                width={360}
                 height={400}
                 alt="Car Image"
                 priority
