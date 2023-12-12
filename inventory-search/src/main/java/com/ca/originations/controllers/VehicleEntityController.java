@@ -16,6 +16,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/inventory/v1/vehicles")
+@CrossOrigin(origins = "http://ec2-3-142-119-225.us-east-2.compute.amazonaws.com:3000")
 public class VehicleEntityController {
 
     private static final Logger logger = LoggerFactory.getLogger(VehicleEntityController.class);
