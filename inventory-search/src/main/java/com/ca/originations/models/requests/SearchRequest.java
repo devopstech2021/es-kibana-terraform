@@ -43,9 +43,9 @@ public class SearchRequest {
 
         Map<String, Aggregation> aggregationMap = new HashMap<>();
 
-        TermsAggregation modelTerm = new TermsAggregation.Builder().field("model").build();
-        TermsAggregation exteriorColorTerm = new TermsAggregation.Builder().field("exterior_color").build();
-        TermsAggregation makeTerm = new TermsAggregation.Builder().field("make").build();
+        TermsAggregation modelTerm = new TermsAggregation.Builder().field("model").size(50).build();
+        TermsAggregation exteriorColorTerm = new TermsAggregation.Builder().field("exterior_color").size(15).build();
+        TermsAggregation makeTerm = new TermsAggregation.Builder().field("make").size(50).build();
         Aggregation models = new Aggregation.Builder().terms(modelTerm).build();
         Aggregation colors = new Aggregation.Builder().terms(exteriorColorTerm).build();
         Aggregation makes = new Aggregation.Builder().terms(makeTerm).build();
@@ -68,6 +68,14 @@ public class SearchRequest {
         MaxAggregation maxYear = new MaxAggregation.Builder().field("make_year").build();
         Aggregation maxYearAgg = new Aggregation.Builder().max(maxYear).build();
         aggregationMap.put("maxYear", maxYearAgg);
+
+        MinAggregation minMileage = new MinAggregation.Builder().field("mileage").build();
+        Aggregation minMileageAgg = new Aggregation.Builder().min(minMileage).build();
+        aggregationMap.put("minMileage", minMileageAgg);
+
+        MaxAggregation maxMileage = new MaxAggregation.Builder().field("mileage").build();
+        Aggregation maxMileageAgg = new Aggregation.Builder().max(maxMileage).build();
+        aggregationMap.put("maxMileage", maxMileageAgg);
 
         return aggregationMap;
     }

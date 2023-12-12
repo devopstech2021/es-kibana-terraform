@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 public class SearchService {
 
     private Logger logger = Logger.getLogger(SearchService.class.getName());
+
     @Autowired
     private ElasticsearchClient client;
 
@@ -88,7 +89,6 @@ public class SearchService {
     private void processAggregation(String key, Aggregate aggregate, Map<String, Map<String, Object>> aggs) {
         if (aggregate.isSterms()) {
             aggregate.sterms().buckets().array().forEach(b -> {
-//                        logger.info("Key: " + key + " Value: " + b.key().stringValue() + " Count: " + b.docCount());
                         var termAgg = aggs.get(key);
                         if (termAgg == null) {
                             termAgg = new HashMap<>();
@@ -117,50 +117,40 @@ public class SearchService {
         if (aggregate.isMax() || aggregate.isMin()) {
             switch (key) {
                 case "minPrice":
-                    addPriceAgg(aggs, doubleValue, "min");
+                    addAggregate(aggs, doubleValue, "min","price");
                     break;
                 case "maxPrice":
-                    addPriceAgg(aggs, doubleValue, "max");
+                    addAggregate(aggs, doubleValue, "max", "price");
                     break;
                 case "minYear":
-                    addVehicleYearAgg(aggs, doubleValue, "min");
+                    addAggregate(aggs, doubleValue, "min", "vehicleYear");
                     break;
                 case "maxYear":
-                    addVehicleYearAgg(aggs, doubleValue, "max");
+                    addAggregate(aggs, doubleValue, "max", "vehicleYear");
+                    break;
+                case "minMileage":
+                    addAggregate(aggs, doubleValue, "min", "milage");
+                    break;
+                case "maxMileage":
+                    addAggregate(aggs, doubleValue, "max", "milage");
                     break;
             }
         }
     }
 
-    private void addVehicleYearAgg(Map<String, Map<String, Object>> aggs, double values, String key) {
-        var yearAgg = aggs.get("vehicleYear");
-        if (yearAgg == null) {
-            yearAgg = new HashMap<>();
-            yearAgg.put(key, values);
+    private void addAggregate(Map<String, Map<String, Object>> aggs, double doubleValue, String key, String aggKey) {
+        var aggregateType = aggs.get(aggKey);
+        if (aggregateType == null) {
+            aggregateType = new HashMap<>();
+            aggregateType.put(key, doubleValue);
         } else {
-            var year = yearAgg.get(key);
-            if (year == null) {
-                yearAgg.put(key, values);
+            var mileage = aggregateType.get(key);
+            if (mileage == null) {
+                aggregateType.put(key, doubleValue);
             } else {
-                yearAgg.put(key, (Double)year + values);
+                aggregateType.put(key, (Double)mileage + doubleValue);
             }
         }
-        aggs.put("vehicleYear", yearAgg);
-    }
-
-    private void addPriceAgg(Map<String, Map<String, Object>> aggs, double values, String key) {
-        var priceAgg = aggs.get("price");
-        if (priceAgg == null) {
-            priceAgg = new HashMap<>();
-            priceAgg.put(key, values);
-        } else {
-            var price = priceAgg.get(key);
-            if (price == null) {
-                priceAgg.put(key, values);
-            } else {
-                priceAgg.put(key, (Double)price + values);
-            }
-        }
-        aggs.put("price", priceAgg);
+        aggs.put(aggKey, aggregateType);
     }
 }

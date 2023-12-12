@@ -12,7 +12,7 @@ The username and password can be changed in the collection. Also if you have Ela
 *Use the following curl commands to insert test data into the Elasticsearch cluster.  The first command will create the index and the second command will insert the test data.*
 <br>
 ```
-curl --location --request PUT 'https://localhost:9200/cars/_doc/3' \
+curl --location --request PUT 'https://localhost:9200/vehicle/_doc/3' \
 --header 'Content-Type: application/json' \
 --header 'Authorization: Basic ZWxhc3RpYzpYblhuT3lYVF9MaFpXc3VTQVFEVw==' \
 --data '{
@@ -39,7 +39,7 @@ curl --location --request PUT 'https://localhost:9200/cars/_doc/3' \
                     "fuel_economy_city": 18                    
                 }'
                 
-curl --location --request PUT 'https://localhost:9200/cars/_doc/1' \
+curl --location --request PUT 'https://localhost:9200/vehicle/_doc/1' \
 --header 'Content-Type: application/json' \
 --header 'Authorization: Basic ZWxhc3RpYzpYblhuT3lYVF9MaFpXc3VTQVFEVw==' \
 --data '{
