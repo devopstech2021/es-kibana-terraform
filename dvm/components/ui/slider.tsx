@@ -63,8 +63,8 @@ const Slider = React.forwardRef(
             <div
               className="absolute text-center"
               style={{
-                left: `calc(${((value - min) / (max - min)) * 100}% - 12px)`,
-                top: `12px`,
+                left: `calc(${((value - min) / (max - min)) * 100}% - 24px)`,
+                top: `14px`,
               }}
             >
               <span className="text-sm">

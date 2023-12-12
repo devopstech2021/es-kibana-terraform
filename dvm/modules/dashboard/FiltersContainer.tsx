@@ -115,7 +115,6 @@ function FiltersContainer({
   colors,
   setColors,
 }: Props) {
-  console.log("filter", filtersData)
   const yearMax = filtersData?.vehicleYear?.max || 2023;
   const yearMin = filtersData?.vehicleYear?.min || 1990;
   const [yearRange, setYearRange] = useState<number[]>([yearMin, yearMax]);
