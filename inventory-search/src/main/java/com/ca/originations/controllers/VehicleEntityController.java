@@ -5,6 +5,7 @@ import com.ca.originations.models.VehicleResponse;
 import com.ca.originations.models.requests.SearchRequest;
 import com.ca.originations.services.SearchService;
 import com.ca.originations.services.VehicleEntityService;
+import jakarta.websocket.server.PathParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,5 +51,11 @@ public class VehicleEntityController {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @GetMapping("/{vehicleId}")
+    public Vehicle getVehicleDetails(@PathVariable("vehicleId") String vehicleId) {
+        logger.info("Getting information for Vehicle: {}", vehicleId);
+        return searchService.getVehicleDetails(vehicleId);
     }
 }

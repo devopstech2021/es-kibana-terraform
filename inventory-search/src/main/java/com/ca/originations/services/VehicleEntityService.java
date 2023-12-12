@@ -16,6 +16,10 @@ public class VehicleEntityService {
         return (Page<Vehicle>) repository.findAll();
     }
 
+    public Vehicle getVehicleById(String vehicleId) {
+        return repository.findById(vehicleId).orElse(null);
+    }
+
 //    public Page<Vehicle> getEntitiesByMakeYear(String year) {
 //        return repository.findByMakeYearCustomQuery(year, null);
 //    }

@@ -28,6 +28,9 @@ public class SearchService {
     @Autowired
     private ElasticsearchClient client;
 
+    @Autowired
+    private VehicleEntityService vehicleEntityService;
+
     public VehicleResponse search(SearchRequest searchRequest) throws RuntimeException, IOException {
         Query query = searchRequest.getQuery().getQuery("test");
         List<SortOptions> sortOptions = searchRequest.getSortOptions();
@@ -152,5 +155,13 @@ public class SearchService {
             }
         }
         aggs.put(aggKey, aggregateType);
+    }
+
+    public Vehicle getVehicleDetails(String vehicleId) {
+        Vehicle vh  = vehicleEntityService.getVehicleById(vehicleId);
+        if (vh == null) {
+            throw new RuntimeException("Vehicle not found");
+        }
+        return vh;
     }
 }
