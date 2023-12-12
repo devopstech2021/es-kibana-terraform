@@ -7,7 +7,7 @@ export interface FormSubmitObject {
   priceMax?: number;
   mileageMin?: number;
   mileageMax?: number;
-  items?: string[];
+  exteriorColors?: string[];
   make?: string;
 }
 
@@ -18,79 +18,83 @@ interface GenerateQueryParams {
   priceMax?: number;
   mileageMin?: number;
   mileageMax?: number;
-  items?: string[];
+  exteriorColors?: string[];
   sellingPrice?: boolean;
   make?: string;
   page?: number;
   limit?: number;
+  model?: string
 }
 
-const generateQuery = (params: GenerateQueryParams): any => {
+const generateQuery = (params: GenerateQueryParams) => {
+  const {
+    sellingPrice,
+    page,
+    limit,
+    make,
+    priceMin,
+    priceMax,
+    mileageMin,
+    mileageMax,
+    yearMin,
+    yearMax,
+    exteriorColors,
+    model
+  } = params;
   const query: any = {
     query: {},
-    sort: {},
-    page: 1,
-    limit: 1,
+    sort: sellingPrice ? { selling_price: "Asc" } : {},
+    page: page || 1,
+    limit: limit || 1,
   };
 
-  if (params.sellingPrice) {
-    query.sort.selling_price = "Asc";
-  }
-  if (params.page) {
-    query.page = params.page;
-  }
-  if (params.limit) {
-    query.limit = params.limit;
-  }
-
-  if (params.make) {
+  if (make) {
     query.query.make = {
       type: "regx",
-      value: params.make,
+      value: make,
     };
   }
 
-  if (params.priceMin !== undefined || params.priceMax !== undefined) {
-    query.query.selling_price = {
-      type: "range",
-      value: {
-        from: params.priceMin || 1,
-        to: params.priceMax || 999999,
-      },
+  if (model) {
+    query.query.model = {
+      type: "regx",
+      value: model,
     };
   }
 
-  if (params.mileageMin !== undefined || params.mileageMax !== undefined) {
-    query.query.mileage = {
-      type: "range",
-      value: {
-        from: params.mileageMin || 1,
-        to: params.mileageMax || 999999,
-      },
-    };
-  }
+  const addRangeQuery = (
+    fieldName: string,
+    minValue?: number,
+    maxValue?: number,
+    defaultValueMin: number = 1,
+    defaultValueMax: number = 999999
+  ) => {
+    if (minValue !== undefined || maxValue !== undefined) {
+      query.query[fieldName] = {
+        type: "range",
+        value: {
+          from: minValue || defaultValueMin,
+          to: maxValue || defaultValueMax,
+        },
+      };
+    }
+  };
 
-  if (params.yearMin !== undefined || params.yearMax !== undefined) {
-    query.query.make_year = {
-      type: "range",
-      value: {
-        from: params.yearMin || 1900,
-        to: params.yearMax || 2023,
-      },
-    };
-  }
+  addRangeQuery("selling_price", priceMin, priceMax, 1, 999999);
+  addRangeQuery("mileage", mileageMin, mileageMax, 1, 999999);
+  addRangeQuery("make_year", yearMin, yearMax, 1990, 2023);
 
-  if (params.items !== undefined && params.items.length > 0) {
-    query.query.items = {
+  if (exteriorColors !== undefined && exteriorColors.length > 0) {
+    query.query.exterior_color = {
       type: "Array",
-      value: params.items,
+      value: exteriorColors,
     };
   }
 
   return query;
 };
 
-export const generateCars = async (
+export const retrieveCars = async (
   formSubmitObject: FormSubmitObject,
   sellingPrice?: boolean,
   page?: number,
@@ -105,6 +109,24 @@ export const generateCars = async (
 
   return HttpClient.post(
     `${process.env.NEXT_PUBLIC_BASE_ENDPOINT}/inventory/v1/vehicles/search`,
+    queryParams
+  );
+};
+export const getFilterData = async (
+  formSubmitObject: FormSubmitObject,
+  sellingPrice?: boolean,
+  page?: number,
+  limit?: number
+) => {
+  const queryParams = generateQuery({
+    ...formSubmitObject,
+    sellingPrice,
+    page,
+    limit,
+  });
+
+  return HttpClient.post(
+    `${process.env.NEXT_PUBLIC_BASE_ENDPOINT}/inventory/v1/vehicles/aggregates`,
     queryParams
   );
 };

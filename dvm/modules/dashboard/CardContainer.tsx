@@ -12,6 +12,33 @@ interface Props {
 }
 
 function CardContainer({ carsData }: Props) {
+  function getCarImage(color: string) {
+    const colorsImagesAvailable = [
+      "aqua",
+      "black",
+      "blue",
+      "fuchsia",
+      "gray",
+      "green",
+      "maroon",
+      "navy",
+      "purple",
+      "silver",
+      "teal",
+      "white",
+      "yellow",
+    ];
+    if (colorsImagesAvailable.includes(color)) {
+      const path = `/cars/${color}/${Math.floor(Math.random() * 4) + 1}.webp`;
+      return path;
+    }
+
+    return `/cars/${
+      colorsImagesAvailable[
+        Math.floor(Math.random() * colorsImagesAvailable.length)
+      ]
+    }/${Math.floor(Math.random() * 4) + 1}.webp`;
+  }
   return (
     <>
       <div className="flex flex-wrap ml-10 mr-10">
@@ -24,7 +51,7 @@ function CardContainer({ carsData }: Props) {
             >
               <Image
                 className=""
-                src={`/cars/${Math.floor(Math.random() * 10) + 1}.webp`}
+                src={getCarImage(car.exterior_color)}
                 width={375}
                 height={400}
                 alt="Car Image"
