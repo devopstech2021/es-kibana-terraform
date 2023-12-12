@@ -49,50 +49,8 @@ const formSchema = z
         required_error: "Please select an model",
       })
       .optional(),
-    yearMin: z.coerce
-      .number()
-      .min(1000, {
-        message: "Enter a valid min. year",
-      })
-      .max(9999),
-    yearMax: z.coerce
-      .number()
-      .min(1000, {
-        message: "Enter a valid max. year",
-      })
-      .max(9999),
-    priceMin: z.coerce
-      .number()
-      .min(1, {
-        message: "Enter a valid min. price",
-      })
-      .max(999999),
-    priceMax: z.coerce
-      .number()
-      .min(1, {
-        message: "Enter a valid max. price",
-      })
-      .max(999999),
-    mileageMin: z.coerce
-      .number()
-      .min(1, {
-        message: "Enter a valid min. mileage",
-      })
-      .max(999999),
-    mileageMax: z.coerce
-      .number()
-      .min(1, {
-        message: "Enter a valid max. mileage",
-      })
-      .max(999999),
     exteriorColors: z.array(z.string()).optional(),
   })
-  .refine((data) => data.priceMin <= data.priceMax, {
-    message: "Min price cannot be greater than max price.",
-  })
-  .refine((data) => data.mileageMin <= data.mileageMax, {
-    message: "Min mileage cannot be greater than max mileage.",
-  });
 
 interface Props {
   handleSubmit: (values: any) => void;
@@ -152,12 +110,6 @@ function FiltersContainer({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      yearMin: yearMin || 1990,
-      yearMax: yearMax || 2023,
-      mileageMin: 1,
-      mileageMax: 999999,
-      priceMin: filtersData?.price?.min || 100,
-      priceMax: filtersData?.price?.max || 999999,
       exteriorColors: colors && colors.length > 0 ? colors : [],
       make: makeValue ? makeValue : undefined,
       model: modelValue ? modelValue : undefined,
