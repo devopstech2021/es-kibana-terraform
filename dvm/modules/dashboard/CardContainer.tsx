@@ -41,7 +41,7 @@ function CardContainer({ carsData }: Props) {
   }
   return (
     <>
-      <div className="flex flex-wrap ml-10 mr-10">
+      <div className="flex flex-wrap ml-8">
         {carsData &&
           carsData.length !== 0 &&
           carsData.map((car: CarInfo) => (
