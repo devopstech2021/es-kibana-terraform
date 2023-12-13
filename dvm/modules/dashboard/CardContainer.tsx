@@ -116,7 +116,12 @@ function CardContainer({ carsData }: Props) {
                   </div>
 
                   <div className="flex justify-center mt-4">
-                    <Button className="bg-warning text-white">
+                    <Button
+                      className="bg-warning text-white"
+                      onClick={() =>
+                        (window.location.href = `/vehicle?id=${car.vehicle_id}`)
+                      }
+                    >
                       Check Deal
                     </Button>
                   </div>
