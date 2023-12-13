@@ -71,7 +71,7 @@ export default function Home() {
       {vehicleDetails ? (
         <Card
           key={vehicleDetails.vehicle_id}
-          className="w-[700px] h-[840px] mx-6 my-2"
+          className="w-[700px] h-[880px] mx-6 my-2"
         >
           <ImageGallery items={images} />
 
@@ -92,7 +92,7 @@ export default function Home() {
                 </div>
               </div>
               <Separator className="my-2" />
-              <div className="flex justify-between mt-2">
+              <div className="flex justify-between items-baseline mt-2">
                 <div>
                   <p className="text-sm text-slate-500">
                     <Network className="h-4 w-4 inline mr-2 mb-1" />
@@ -102,11 +102,16 @@ export default function Home() {
                     <GaugeCircle className="h-4 w-4 inline mr-2 mb-1" />
                     {vehicleDetails.transmission}
                   </p>
+                </div>
+                <div>
                   <p className="text-sm text-slate-500 mt-2">
-                    City Mileage : {vehicleDetails.fuel_economy_city}
+                    Dealer Name: : Micheal
                   </p>
                   <p className="text-sm text-slate-500 mt-2">
-                    Highway Mileage{vehicleDetails.fuel_economy_highway}
+                    Dealer Contact: "+1_9900889989"
+                  </p>
+                  <p className="text-sm text-slate-500 mt-2">
+                    Dealer Location: Michigan
                   </p>
                 </div>
                 <div className="flex flex-col items-center justify-between">
@@ -137,6 +142,14 @@ export default function Home() {
                     )}
                   </div>
                 </div>
+              </div>
+              <div>
+                <p className="text-sm text-slate-500 mt-2">
+                  City Mileage : {vehicleDetails.fuel_economy_city}
+                </p>
+                <p className="text-sm text-slate-500 mt-2">
+                  Highway Mileage{vehicleDetails.fuel_economy_highway}
+                </p>
               </div>
               <div className="flex justify-center mt-4">
                 <Button className="bg-warning text-white ">Buy</Button>
