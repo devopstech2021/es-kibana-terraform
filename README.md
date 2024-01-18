@@ -1,5 +1,5 @@
-# es-kibana-terraform
-Elasticsearch and kibana setup using with Terraform
+# Opensearch-terraform
+AWS Opensearch setup using with Terraform
 
 To create AWS infrastructure using terraform template,
 
