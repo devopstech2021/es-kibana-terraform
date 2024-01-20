@@ -62,7 +62,7 @@ resource "aws_opensearch_domain" "opensearch" {
   }
 
   software_update_options{
-    auto_software_update_enabled = true
+    auto_software_update_enabled = false
   }
 
   off_peak_window_options {
