@@ -1,5 +1,5 @@
-# Opensearch-terraform
-AWS Opensearch setup using with Terraform
+# Opensearch & EKS terraform
+AWS Opensearch & EKS setup using with Terraform
 
 To create AWS infrastructure using terraform template,
 
