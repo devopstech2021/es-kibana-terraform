@@ -108,8 +108,11 @@ export const retrieveCars = async (
   });
 
   return HttpClient.post(
-    `${process.env.NEXT_PUBLIC_BASE_ENDPOINT}/inventory/v1/vehicles/search`,
-    queryParams
+    `${process.env.NEXT_PUBLIC_BASE_ENDPOINT}/vehicle-search-engine/vehicle/search`,
+    {
+      start: page,
+      length: limit
+    }
   );
 };
 export const getFilterData = async (
@@ -126,7 +129,9 @@ export const getFilterData = async (
   });
 
   return HttpClient.post(
-    `${process.env.NEXT_PUBLIC_BASE_ENDPOINT}/inventory/v1/vehicles/aggregates`,
-    queryParams
+    `${process.env.NEXT_PUBLIC_BASE_ENDPOINT}/vehicle-search-engine/vehicle/facets`,
+    {"pageSize": 5,
+    "start": 10,
+    "length": 10}
   );
 };

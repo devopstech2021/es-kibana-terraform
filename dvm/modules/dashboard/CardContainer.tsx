@@ -6,12 +6,14 @@ import { Network, GaugeCircle } from "lucide-react";
 import CarInfo from "./types/CarData.types";
 import { Badge } from "@/components/ui/badge";
 import { formatNumber } from "@/lib/utils";
+import { useRouter } from 'next/navigation'
 
 interface Props {
   carsData: CarInfo[];
 }
 
 function CardContainer({ carsData }: Props) {
+  const router = useRouter()
   function getCarImage(color: string) {
     const colorsImagesAvailable = [
       "aqua",
@@ -46,12 +48,12 @@ function CardContainer({ carsData }: Props) {
           carsData.length !== 0 &&
           carsData.map((car: CarInfo) => (
             <Card
-              key={car.vehicle_id}
-              className="w-[360px] h-[610px] mx-6 my-2"
+              key={car.id}
+              className="w-[360px] h-[630px] mx-6 my-2"
             >
               <Image
                 className=""
-                src={getCarImage(car.exterior_color)}
+                src={getCarImage(car.exteriorColor)}
                 width={360}
                 height={400}
                 alt="Car Image"
@@ -63,13 +65,13 @@ function CardContainer({ carsData }: Props) {
                   <div className="flex justify-between items-start h-24 text-ellipsis overflow-hidden">
                     <div className="w-2/4">
                       <p className="text-blue-500 text-xl font-bold">
-                        {car.make_year} {car.make} {car.model}
+                        {car.year} {car.make} {car.model}
                       </p>
                     </div>
                     <Separator orientation="vertical" className="mr-4" />
                     <div className="w-1/3">
                       <p className="text-xl font-bold">
-                        ${formatNumber(Number(car.selling_price))}
+                        ${formatNumber(Number(car.sellingPrice))}
                       </p>
                     </div>
                   </div>
@@ -87,27 +89,27 @@ function CardContainer({ carsData }: Props) {
                     </div>
                     <div className="flex flex-col items-center justify-between">
                       <div>
-                        {car.category && (
+                        {car.engine && (
                           <div className="flex">
                             <Badge
                               variant={"outline"}
                               className="ml-1"
-                              key={car.vehicle_id}
+                              key={car.id}
                             >
-                              {car.category}
+                              {car.engine}
                             </Badge>
                           </div>
                         )}
                       </div>
                       <div>
-                        {car.fuel && (
+                        {car.series && (
                           <div className="flex mt-2">
                             <Badge
                               variant={"outline"}
                               className="ml-1"
-                              key={car.vehicle_id}
+                              key={car.id}
                             >
-                              {car.fuel}
+                              {car.series}
                             </Badge>
                           </div>
                         )}
@@ -118,9 +120,8 @@ function CardContainer({ carsData }: Props) {
                   <div className="flex justify-center mt-4">
                     <Button
                       className="bg-warning text-white"
-                      onClick={() =>
-                        (window.location.href = `/vehicle?id=${car.vehicle_id}`)
-                      }
+                     
+                      onClick={() => router.push(`/vehicle/${car.id}`)}
                     >
                       Check Deal
                     </Button>

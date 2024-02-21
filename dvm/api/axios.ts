@@ -3,6 +3,7 @@ import axios from "axios";
 axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_ENDPOINT;
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 axios.defaults.headers.put['Content-Type'] = 'application/json';
+axios.defaults.headers.get['Content-Type'] = 'application/json';
 axios.defaults.headers.delete['Content-Type'] = 'application/x-www-form-urlencoded';
 
 const HttpClient = axios.create();

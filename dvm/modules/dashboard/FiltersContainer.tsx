@@ -73,16 +73,16 @@ function FiltersContainer({
   colors,
   setColors,
 }: Props) {
-  const yearMax = filtersData?.vehicleYear?.max || 2023;
-  const yearMin = filtersData?.vehicleYear?.min || 1990;
+  const yearMax = filtersData?.maxYear || 2023;
+  const yearMin = filtersData?.minYear || 1990;
   const [yearRange, setYearRange] = useState<number[]>([yearMin, yearMax]);
   const price = {
-    min: filtersData?.price?.min || 1,
-    max: filtersData?.price?.max || 999999,
+    min: filtersData?.minSellingPrice || 1,
+    max: filtersData?.maxSellingPrice || 999999,
   };
   const mileage = {
-    min: filtersData?.milage?.min || 1,
-    max: filtersData?.milage?.max || 999999,
+    min: filtersData?.minMileage || 1,
+    max: filtersData?.maxMileage || 999999,
   };
   const [priceRange, setPriceRange] = useState<number[]>([
     price.min,
@@ -92,9 +92,9 @@ function FiltersContainer({
     mileage.min,
     mileage.max,
   ]);
-  const vehicleMake = convertJsonToArrayAndSort(filtersData.make);
-  const vehicleModel = convertJsonToArrayAndSort(filtersData.model);
-  const vehicleColors = convertJsonToArrayAndSort(filtersData.colors);
+  const vehicleMake = convertJsonToArrayAndSort(filtersData.makes);
+  const vehicleModel = convertJsonToArrayAndSort(filtersData.models);
+  const vehicleColors = ["aqua","black","blue","fuchsia","gray","green","maroon","navy","purple","silver","teal","white","yellow"];
   const handleYearChange = (value: number[]) => {
     onSubmit(form.getValues(), priceRange, value);
     setYearRange(value);
@@ -192,7 +192,7 @@ function FiltersContainer({
                     {vehicleMake?.map((el: any) => (
                       <>
                         <SelectItem key={el.data} value={el.data}>
-                          {el.data} ({el.value})
+                        {el.value} ({el.data}) 
                         </SelectItem>
                       </>
                     ))}
@@ -252,37 +252,37 @@ function FiltersContainer({
                 </div>
                 {vehicleColors?.map((item) => (
                   <FormField
-                    key={item.data}
+                    key={item}
                     control={form.control}
                     name="exteriorColors"
                     render={({ field }) => {
                       return (
                         <FormItem
-                          key={item.data}
+                          key={item}
                           className="flex flex-row exteriorColors-start space-x-3 space-y-0"
                         >
                           <FormControl>
                             <Checkbox
-                              checked={field.value?.includes(item.data)}
+                              checked={field.value?.includes(item)}
                               onCheckedChange={(checked) => {
                                 return checked
                                   ? field.onChange([
                                       // @ts-ignore
                                       ...field.value,
-                                      item.data,
+                                      item,
                                     ])
                                   : field.onChange(
                                       field.value?.filter(
-                                        (value) => value !== item.data
+                                        (value) => value !== item
                                       )
                                     );
                               }}
                             />
                           </FormControl>
                           <FormLabel className="font-normal">
-                            <Egg strokeWidth={20} className="inline mr-2 rounded-xl" size={"18px"} color={toHex(item.data)}/>
-                            {item.data.charAt(0).toUpperCase()}
-                            {item.data.slice(1)} ({item.value})
+                            <Egg strokeWidth={20} className="inline mr-2 rounded-xl" size={"18px"} color={toHex(item)}/>
+                            {item.charAt(0).toUpperCase()}
+                            {item.slice(1)} ({item})
                           </FormLabel>
                         </FormItem>
                       );

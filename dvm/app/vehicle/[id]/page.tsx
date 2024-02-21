@@ -1,35 +1,36 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useRouter } from "next/navigation";
 import { Network, GaugeCircle } from "lucide-react";
-import CarInfo from "../../modules/dashboard/types/CarData.types";
+import CarInfo from "../../../modules/dashboard/types/CarData.types";
 import { Badge } from "@/components/ui/badge";
 import { formatNumber } from "@/lib/utils";
 import { getVehiclDetails } from "@/api/services/vehicle";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
-
 // @ts-ignore
 import ImageGallery from "react-image-gallery";
 
-export default function Home() {
+function VehicleDetails({
+  params,
+}: {
+  params: {
+    id: string;
+  };
+}) {
   const { toast } = useToast();
   const { push } = useRouter();
-  const searchParams = useSearchParams();
   const [vehicleDetails, setVehicleDetails] = useState<CarInfo>();
 
   useEffect(() => {
-    const search = searchParams.get("id");
-    console.log(search);
-    if (search) {
-      getCars(Number(search));
+    if (params.id) {
+      getCars(Number(params.id));
     } else {
-      // push("/");
+      push("/");
     }
   }, []);
   const images = [
@@ -48,13 +49,11 @@ export default function Home() {
   ];
 
   const getCars = async (id: number) => {
-    // setIsLoadingCard(true);
     try {
       const res = await getVehiclDetails(id);
       console.log(res.data);
       if (res.data) {
-        console.log(res.data);
-        setVehicleDetails(res.data);
+        setVehicleDetails(res.data.content[0]);
       }
     } catch (error) {
       toast({
@@ -62,17 +61,13 @@ export default function Home() {
         title: "Uh oh! Something went wrong.",
       });
     } finally {
-      // setIsLoadingCard(false);
     }
   };
 
   return (
-    <main className="min-h-screen mx-32 my-32">
+    <main className="min-h-screen flex justify-center items-center">
       {vehicleDetails ? (
-        <Card
-          key={vehicleDetails.vehicle_id}
-          className="w-[700px] h-[880px] mx-6 my-2"
-        >
+        <Card key={vehicleDetails.id} className="w-[560px] h-[750px] mx-6 my-2">
           <ImageGallery items={images} />
 
           <CardContent>
@@ -80,14 +75,14 @@ export default function Home() {
               <div className="flex justify-between items-start h-24 text-ellipsis overflow-hidden">
                 <div className="w-2/4">
                   <p className="text-blue-500 text-xl font-bold">
-                    {vehicleDetails.make_year} {vehicleDetails.make}{" "}
+                    {vehicleDetails.year} {vehicleDetails.make}{" "}
                     {vehicleDetails.model}
                   </p>
                 </div>
                 <Separator orientation="vertical" className="mr-4" />
                 <div className="w-1/3">
                   <p className="text-xl font-bold">
-                    ${formatNumber(Number(vehicleDetails.selling_price))}
+                    ${formatNumber(Number(vehicleDetails.sellingPrice))}
                   </p>
                 </div>
               </div>
@@ -105,51 +100,43 @@ export default function Home() {
                 </div>
                 <div>
                   <p className="text-sm text-slate-500 mt-2">
-                    Dealer Name: : Micheal
+                    Dealer Name: : {vehicleDetails.dealerName}
                   </p>
                   <p className="text-sm text-slate-500 mt-2">
-                    Dealer Contact: "+1_9900889989"
+                    Dealer Contact: {vehicleDetails.dealerAddress1}
                   </p>
                   <p className="text-sm text-slate-500 mt-2">
-                    Dealer Location: Michigan
+                    Dealer State: {vehicleDetails.dealerState}
                   </p>
                 </div>
                 <div className="flex flex-col items-center justify-between">
                   <div>
-                    {vehicleDetails.category && (
+                    {vehicleDetails.engine && (
                       <div className="flex">
                         <Badge
                           variant={"outline"}
                           className="ml-1"
-                          key={vehicleDetails.vehicle_id}
+                          key={vehicleDetails.id}
                         >
-                          {vehicleDetails.category}
+                          {vehicleDetails.engine}
                         </Badge>
                       </div>
                     )}
                   </div>
                   <div>
-                    {vehicleDetails.fuel && (
+                    {vehicleDetails.series && (
                       <div className="flex mt-2">
                         <Badge
                           variant={"outline"}
                           className="ml-1"
-                          key={vehicleDetails.vehicle_id}
+                          key={vehicleDetails.id}
                         >
-                          {vehicleDetails.fuel}
+                          {vehicleDetails.series}
                         </Badge>
                       </div>
                     )}
                   </div>
                 </div>
-              </div>
-              <div>
-                <p className="text-sm text-slate-500 mt-2">
-                  City Mileage : {vehicleDetails.fuel_economy_city}
-                </p>
-                <p className="text-sm text-slate-500 mt-2">
-                  Highway Mileage{vehicleDetails.fuel_economy_highway}
-                </p>
               </div>
               <div className="flex justify-center mt-4">
                 <Button className="bg-warning text-white ">Buy</Button>
@@ -203,3 +190,5 @@ export default function Home() {
     </main>
   );
 }
+
+export default VehicleDetails;

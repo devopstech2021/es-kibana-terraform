@@ -40,8 +40,9 @@ function Dashboard() {
     try {
       const res = await retrieveCars(formValues, false, pageNo, limit);
       if (res.data) {
-        setCarsData(res.data.result);
-        setTotalPages(Math.ceil(res.data.total / limit));
+        console.log("got data", res.data);
+        setCarsData(res.data.content);
+        setTotalPages(Math.ceil(res.data.totalPages));
       }
     } catch (error) {
       toast({
@@ -63,32 +64,29 @@ function Dashboard() {
       if (res.data) {
         setFormValues((prevValues: any) => ({
           ...prevValues,
-          yearMin: res.data.vehicleYear.min,
-          yearMax: res.data.vehicleYear.max,
-          priceMax: res.data.price.max,
-          priceMin: res.data.price.min,
-          mileageMax: res.data.milage.max,
-          mileageMin: res.data.milage.min,
+          yearMin: res.data.minYear,
+          yearMax: res.data.maxYear,
+          priceMax: res.data.maxSellingPrice,
+          priceMin: res.data.minSellingPrice,
+          mileageMax: res.data.maxMileage,
+          mileageMin: res.data.minMileage,
         }));
         setFilterData(res.data);
-        if (res.data.total.total_vehicles === 0) {
-          setTotalPages(0);
+        if (filterSubmit) {
+          getCars(formValues, pageNo);
         } else {
-          if (filterSubmit) {
-            getCars(formValues, pageNo);
-          } else {
-            getCars(
-              {
-                yearMin: res.data.vehicleYear.min,
-                yearMax: res.data.vehicleYear.max,
-                priceMax: res.data.price.max,
-                priceMin: res.data.price.min,
-                mileageMax: res.data.milage.max,
-                mileageMin: res.data.milage.min,
-              },
-              pageNo
-            );
-          }
+          console.log("man here")
+          getCars(
+            {
+              yearMin: res.data.minYear,
+              yearMax: res.data.maxYear,
+              priceMax: res.data.maxSellingPrice,
+              priceMin: res.data.minSellingPrice,
+              mileageMax: res.data.maxMileage,
+              mileageMin: res.data.minMileage,
+            },
+            pageNo
+          );
         }
       }
     } catch (error) {
